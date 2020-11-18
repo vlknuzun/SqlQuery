@@ -1,0 +1,19 @@
+Select 
+*
+From (
+	SELECT 
+	a.[Urun]
+	,min(a.[Fiyat]) as MinFiyat
+	,max(a.[Fiyat]) as MaxFiyat
+	,avg(a.[Fiyat]) as AvgFiyat
+	FROM [dbo].[AKA] a 
+	group  by a.[Urun]
+) as t 
+cross apply 
+(
+select top 1 b.Site as MinSite from [dbo].[AKA] b where t.Urun = b.Urun order by b.Fiyat
+) x
+cross apply 
+(
+select top 1 c.Site as MaxSite from [dbo].[AKA] c where t.Urun = c.Urun order by c.Fiyat desc
+) z
